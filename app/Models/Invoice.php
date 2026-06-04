@@ -21,6 +21,16 @@ class Invoice extends Model
         'catatan',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'user_id'     => 'integer',
+            'total_harga' => 'integer',
+            'total_bayar' => 'integer',
+            'kembalian'   => 'integer',
+        ];
+    }
+
     // Relasi ke User
     public function user()
     {

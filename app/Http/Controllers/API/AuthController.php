@@ -1,68 +1,63 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Http\Traits\ApiResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+    use ApiResponse;
 
+    public function register(RegisterRequest $request)
+    {
         $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
+            'name'        => $request->name,
+            'nama_bisnis' => $request->nama_bisnis,
+            'email'       => $request->email,
+            'no_hp'       => $request->no_hp,
+            'tgl_lahir'   => $request->tgl_lahir,
+            'password'    => Hash::make($request->password),
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Register berhasil',
-            'token'   => $token,
-            'user'    => $user,
-        ], 201);
+        return $this->created([
+            'token' => $token,
+            'user'  => $user,
+        ], 'Register berhasil');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('email', $request->email)->first();
+        // Deteksi input email atau no_hp
+        $field = str_contains($request->login, '@') ? 'email' : 'no_hp';
+        $user  = User::where($field, $request->login)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Email atau password salah.'],
-            ]);
+            return $this->error('Email/No HP atau password salah.', 401);
         }
+
+        // Hapus semua token lama — 1 akun hanya 1 device
+        $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Login berhasil',
-            'token'   => $token,
-            'user'    => $user,
-        ]);
+        return $this->success([
+            'token' => $token,
+            'user'  => $user,
+        ], 'Login berhasil');
     }
 
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logout berhasil',
-        ]);
+        return $this->success(null, 'Logout berhasil');
     }
 }

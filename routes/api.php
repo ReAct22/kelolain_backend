@@ -7,12 +7,13 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\API\OwnerKataTerlarangController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-// Protected routes
+// Protected routes (User)
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -29,6 +30,17 @@ Route::middleware('auth:sanctum')->group(function () {
     // Invoice
     Route::apiResource('invoices', InvoiceController::class);
 
-    // Dashboard
+    // Dashboard User
     Route::get('/dashboard', [DashboardController::class, 'index']);
+});
+
+// Protected routes (Owner only)
+Route::middleware(['auth:sanctum', 'owner'])->prefix('owner')->group(function () {
+
+    // Kata Terlarang CRUD
+    Route::apiResource('kata-terlarang', OwnerKataTerlarangController::class);
+
+    // Handle Pelanggaran Produk
+    Route::post('/produks/{id}/pelanggaran', [ProdukController::class, 'handlePelanggaran']);
+
 });

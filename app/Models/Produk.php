@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\InvoiceDetail;
+use App\Models\ProductViolation;
 
 class Produk extends Model
 {
@@ -18,7 +19,25 @@ class Produk extends Model
         'stok',
         'gambar',
         'status',
+        'jumlah_peringatan',
+        'peringatan_terakhir',
+        'is_banned',
+        'banned_sampai',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'user_id'             => 'integer',
+            'category_id'         => 'integer',
+            'harga'               => 'integer',
+            'stok'                => 'integer',
+            'jumlah_peringatan'   => 'integer',
+            'peringatan_terakhir' => 'datetime',
+            'is_banned'           => 'boolean',
+            'banned_sampai'       => 'datetime',
+        ];
+    }
 
     // Relasi ke User
     public function user()
@@ -36,5 +55,22 @@ class Produk extends Model
     public function invoiceDetails()
     {
         return $this->hasMany(InvoiceDetail::class);
+    }
+
+    // Relasi ke ProductViolation
+    public function violations()
+    {
+        return $this->hasMany(ProductViolation::class);
+    }
+
+    // Helper — cek apakah produk sedang dibanned
+    public function isBanned(): bool
+    {
+        if (!$this->is_banned) return false;
+        if ($this->banned_sampai && now()->greaterThan($this->banned_sampai)) {
+            $this->update(['is_banned' => false, 'banned_sampai' => null]);
+            return false;
+        }
+        return true;
     }
 }
