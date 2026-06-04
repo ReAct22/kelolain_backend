@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\ProdukController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\InvoiceController;
-use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProdukController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\InvoiceController;
+use App\Http\Controllers\API\DashboardController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
