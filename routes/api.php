@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProdukController;
@@ -44,3 +45,11 @@ Route::middleware(['auth:sanctum', 'owner'])->prefix('owner')->group(function ()
     Route::post('/produks/{id}/pelanggaran', [ProdukController::class, 'handlePelanggaran']);
 
 });
+=======
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+>>>>>>> Stashed changes
