@@ -7,6 +7,7 @@ use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\InvoiceController;
 use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\API\OwnerDashboardController;
 use App\Http\Controllers\API\OwnerKataTerlarangController;
 
 // Public routes
@@ -36,6 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Protected routes (Owner only)
 Route::middleware(['auth:sanctum', 'owner'])->prefix('owner')->group(function () {
+
+    // Dashboard Owner
+    Route::get('/dashboard', [OwnerDashboardController::class, 'index']);
 
     // Kata Terlarang CRUD
     Route::apiResource('kata-terlarang', OwnerKataTerlarangController::class);
