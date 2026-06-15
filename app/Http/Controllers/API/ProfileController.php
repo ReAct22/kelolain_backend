@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -23,8 +24,17 @@ class ProfileController extends Controller
         $request->validate([
             'name'        => 'sometimes|string|max:255',
             'nama_bisnis' => 'sometimes|string|max:255',
-            'email'       => 'sometimes|email|unique:users,email,' . $user->id,
-            'no_hp'       => 'sometimes|string|max:20|unique:users,no_hp,' . $user->id,
+            'email'       => [
+                'sometimes',
+                'email',
+                Rule::unique('users', 'email')->ignore($user->id)->whereNull('deleted_at'),
+            ],
+            'no_hp'       => [
+                'sometimes',
+                'string',
+                'max:20',
+                Rule::unique('users', 'no_hp')->ignore($user->id)->whereNull('deleted_at'),
+            ],
             'tgl_lahir'   => 'sometimes|date|before:today',
             'password'    => 'sometimes|string|min:8|confirmed',
         ]);

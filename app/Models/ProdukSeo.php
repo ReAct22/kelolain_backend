@@ -4,26 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Invoice;
 use App\Models\Produk;
 
-class InvoiceDetail extends Model
+class ProdukSeo extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'produk_seo';
+
     protected $fillable = [
-        'invoice_id',
         'produk_id',
-        'nama_produk',
-        'harga',
-        'qty',
-        'subtotal',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'slug',
+        'og_image',
     ];
 
-    // Relasi ke Invoice
-    public function invoice()
+    protected function casts(): array
     {
-        return $this->belongsTo(Invoice::class);
+        return [
+            'produk_id' => 'integer',
+        ];
     }
 
     // Relasi ke Produk

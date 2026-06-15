@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KataTerlarang extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'kata_terlarang';
 
     protected $fillable = [
@@ -23,10 +27,10 @@ class KataTerlarang extends Model
     }
 
     // Scope — ambil kata terlarang by jenis yang aktif
-    public function scopeByJenis($query, string $jenis)
+    public function scopeByJenis(Builder $query, string $jenis): Builder
     {
         return $query->where('is_aktif', true)
-                     ->where(function ($q) use ($jenis) {
+                     ->where(function (Builder $q) use ($jenis) {
                          $q->where('jenis', $jenis)
                            ->orWhere('jenis', 'keduanya');
                      });

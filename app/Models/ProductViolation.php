@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Produk;
 use App\Models\User;
 
 class ProductViolation extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'produk_id',
         'user_id',

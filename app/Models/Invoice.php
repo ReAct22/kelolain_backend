@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\InvoiceDetail;
 
 class Invoice extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'no_invoice',

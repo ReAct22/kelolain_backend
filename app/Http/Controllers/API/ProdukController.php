@@ -170,10 +170,7 @@ class ProdukController extends Controller
             return $this->notFound('Produk tidak ditemukan');
         }
 
-        if ($produk->gambar) {
-            Storage::disk('public')->delete($produk->gambar);
-        }
-
+        // Soft delete — gambar TIDAK dihapus, data masih bisa direstore
         $produk->delete();
 
         return $this->success(null, 'Produk berhasil dihapus');
@@ -219,10 +216,7 @@ class ProdukController extends Controller
         ));
 
         if ($is_final) {
-            // Peringatan ke-3 — hapus produk & banned user 30 hari
-            if ($produk->gambar) {
-                Storage::disk('public')->delete($produk->gambar);
-            }
+            // Peringatan ke-3 — soft delete produk (gambar tetap disimpan) & banned user 30 hari
             $produk->delete();
 
             $user->update([

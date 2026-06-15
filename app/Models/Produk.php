@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\InvoiceDetail;
 use App\Models\ProductViolation;
+use App\Models\ProdukSeo;
 
 class Produk extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'category_id',
@@ -61,6 +65,12 @@ class Produk extends Model
     public function violations()
     {
         return $this->hasMany(ProductViolation::class);
+    }
+
+    // Relasi ke ProdukSeo
+    public function seo()
+    {
+        return $this->hasOne(ProdukSeo::class);
     }
 
     // Helper — cek apakah produk sedang dibanned

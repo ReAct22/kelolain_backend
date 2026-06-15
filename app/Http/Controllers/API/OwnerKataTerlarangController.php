@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Traits\ApiResponse;
 use App\Models\KataTerlarang;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class OwnerKataTerlarangController extends Controller
 {
@@ -38,7 +39,12 @@ class OwnerKataTerlarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kata'       => 'required|string|max:255|unique:kata_terlarang,kata',
+            'kata'       => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('kata_terlarang', 'kata')->whereNull('deleted_at'),
+            ],
             'jenis'      => 'required|in:nama_produk,kategori,keduanya',
             'keterangan' => 'nullable|string',
             'is_aktif'   => 'nullable|boolean',
@@ -74,7 +80,12 @@ class OwnerKataTerlarangController extends Controller
         }
 
         $request->validate([
-            'kata'       => 'sometimes|string|max:255|unique:kata_terlarang,kata,' . $id,
+            'kata'       => [
+                'sometimes',
+                'string',
+                'max:255',
+                Rule::unique('kata_terlarang', 'kata')->ignore($id)->whereNull('deleted_at'),
+            ],
             'jenis'      => 'sometimes|in:nama_produk,kategori,keduanya',
             'keterangan' => 'nullable|string',
             'is_aktif'   => 'nullable|boolean',
