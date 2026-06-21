@@ -16,6 +16,7 @@ use App\Http\Controllers\API\OwnerSeoController;
 use App\Http\Controllers\API\OwnerLandingPageController;
 use App\Http\Controllers\API\LandingPageController;
 use App\Http\Controllers\API\OwnerUserController;
+use App\Http\Controllers\API\OwnerBackupController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -71,6 +72,12 @@ Route::middleware(['auth:sanctum', 'owner'])->prefix('owner')->group(function ()
     Route::get('/users/{id}', [OwnerUserController::class, 'show']);
     Route::put('/users/{id}', [OwnerUserController::class, 'update']);
     Route::delete('/users/{id}', [OwnerUserController::class, 'destroy']);
+
+    // === Backup Otomatis ===
+    Route::post('/backup/jalankan', [OwnerBackupController::class, 'jalankan']);
+    Route::get('/backup/status', [OwnerBackupController::class, 'status']);
+    Route::get('/backup', [OwnerBackupController::class, 'index']);
+    Route::get('/backup/{tanggal}/download/{jenis}', [OwnerBackupController::class, 'download']);
 
     // Kata Terlarang CRUD
     Route::apiResource('kata-terlarang', OwnerKataTerlarangController::class);
